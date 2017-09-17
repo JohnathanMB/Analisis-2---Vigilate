@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "282251349763",
+    "firebase_url": "https://vigilate-5e7b7.firebaseio.com",
+    "project_id": "vigilate-5e7b7",
+    "storage_bucket": "vigilate-5e7b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282251349763:android:c0aeee80744ad253",
+        "android_client_info": {
+          "package_name": "com.example.johnathan.vigilate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282251349763-eca24cadjj6ttf0lj493s03s3t79n9qg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.johnathan.vigilate",
+            "certificate_hash": "24046d302bf9b2509606733103d03e88fc499e71"
+          }
+        },
+        {
+          "client_id": "282251349763-90j0o4hbi2hifc38vjrdmdccibipvi49.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMyvHUAr39_h91m-oV4TDHT8n7i7EpdgE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282251349763-90j0o4hbi2hifc38vjrdmdccibipvi49.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

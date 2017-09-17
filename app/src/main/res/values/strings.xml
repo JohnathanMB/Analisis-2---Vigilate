@@ -10,5 +10,6 @@
     <string name="txtActivar">Activar</string>
     <string name="swOff">Desactivado</string>
     <string name="swOn">Activado</string>
+    <string name="not_log_in">No se pudo iniciar sesión</string>
 
 </resources>
