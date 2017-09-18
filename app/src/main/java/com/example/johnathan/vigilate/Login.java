@@ -18,7 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient.Builder;
 public class Login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private GoogleApiClient googleApiClient;
     public static final int SIGN_IN_CODE = 777;
-    public static final String not_log_in = "No se pudo iniciar sesión";
+    public static final String not_log_in = String.valueOf(R.string.not_log_in);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

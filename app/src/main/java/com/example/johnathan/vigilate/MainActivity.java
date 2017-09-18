@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     protected void onStart() {
         super.onStart();
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+
+        /*
         if(opr.isDone()){
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             });
         }
+        */
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -108,6 +111,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             }
         });
+    }
+
+    public void location(View view){
+        Intent intents = new Intent(this, MapsActivity.class);
+        startActivity(intents);
     }
 
     @Override

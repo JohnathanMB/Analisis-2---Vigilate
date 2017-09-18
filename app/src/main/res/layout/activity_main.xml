@@ -62,5 +62,13 @@
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:onClick="revoke"
     />
+    <Button
+        android:text="My Location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:onClick="location"
+        />
+
 
 </LinearLayout>

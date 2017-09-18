@@ -11,5 +11,6 @@
     <string name="swOff">Desactivado</string>
     <string name="swOn">Activado</string>
     <string name="not_log_in">No se pudo iniciar sesión</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
