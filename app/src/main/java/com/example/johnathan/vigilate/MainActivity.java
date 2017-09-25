@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -31,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private Switch switch1;
     private TextView mensaje;
     private TextView activar;
+    private Toolbar toolbar;
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -74,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
         photoImageView = (ImageView) findViewById(R.id.photoImageView);
         nameTextView = (TextView) findViewById(R.id.nameTextView);
         emailTextView = (TextView) findViewById(R.id.emailTextView);
@@ -104,8 +115,33 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
 
-    public void logOut(View view) {
+    public  boolean onOptionsItemSelected(MenuItem menuItem){
+        switch (menuItem.getItemId()){
+            case R.id.menuLocation:
+                //opciones para opcion My Location
+                location();
+                break;
+            case R.id.menuSettings:
+                //opciones settings
+                //debe ir a la vista de configuraciones
+                break;
+            case R.id.menuLogOut:
+                //opciones singOut
+                logOut();
+                break;
+
+        }
+
+        return true;
+    }
+
+
+    public void logOut() {
         Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
@@ -131,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
-    public void location(View view){
+    public void location(){
         Intent intents = new Intent(this, MapsActivity.class);
         startActivity(intents);
     }

@@ -4,52 +4,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="40dp"
-    android:paddingTop="40dp"
-    android:paddingBottom="20dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:orientation="vertical"
     tools:context="com.example.johnathan.vigilate.MainActivity">
 
+    <include layout="@layout/toolbar"
 
-    <ImageView
-        android:id="@+id/photoImageView"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_margin="8dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/colorAccent" />
+        />
 
     <TextView
-        android:id="@+id/nameTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingVertical="20dp"
+        android:gravity="center"
+        android:padding="10dp"
         android:text="@string/app_name"
         android:textStyle="bold"
         android:textSize="40sp" />
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/photoImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="8dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorAccent"
+        android:elevation="50dp"
+        />
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
-        android:paddingVertical="20dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="aquí va el nombre del usuario"
+        android:textSize="20dp" />
+
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"
         android:text="ACTIVAR"
-        android:textColor="#000000"
         android:textOff="Off"
         android:textOn="On"
         android:textSize="20dp"
-        tools:checked="false" />
+        tools:checked="false"
+        android:elevation="200dp"
+        />
 
     <TextView
         android:id="@+id/mensaje"
         android:paddingTop="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="Estas desprotegido ACTIVAME"
