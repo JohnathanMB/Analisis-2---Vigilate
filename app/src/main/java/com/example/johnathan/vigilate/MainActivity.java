@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private TextView emailTextView;
     private TextView idTextView;
     private GoogleApiClient googleApiClient;
-
+    private Switch switch1;
+    private TextView mensaje;
+    private TextView activar;
     @Override
     protected void onStart() {
         super.onStart();
@@ -84,6 +87,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        switch1 =  findViewById(R.id.switch1);
+        mensaje= findViewById(R.id.mensaje);
+        switch1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!switch1.isChecked()){
+                    mensaje.setText("Estas desprotegido ACTIVAME");
+                    Toast.makeText (getApplicationContext() ,"Se desactivo la aplicacion",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    mensaje.setText("En caso de emergencia presiona 5 veces la tecla de bloqueo");
+                    Toast.makeText (getApplicationContext() ,"Se activo la aplicacion",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
 
