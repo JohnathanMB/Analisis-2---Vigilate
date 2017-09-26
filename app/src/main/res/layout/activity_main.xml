@@ -38,7 +38,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:padding="10dp"
-        android:text="aquí va el nombre del usuario"
+        android:text="Nombre de usuario"
         android:textSize="20dp" />
 
 

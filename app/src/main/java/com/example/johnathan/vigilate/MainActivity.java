@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private ImageView photoImageView;
     private TextView nameTextView;
-    private TextView emailTextView;
-    private TextView idTextView;
     private GoogleApiClient googleApiClient;
     private Switch switch1;
     private TextView mensaje;
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onStart();
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
 
-        /*
+
         if(opr.isDone()){
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
@@ -55,15 +53,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             });
         }
-        */
+
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
         if(result.isSuccess()){
             GoogleSignInAccount account = result.getSignInAccount();
             nameTextView.setText(account.getDisplayName());
-            emailTextView.setText(account.getEmail());
-            idTextView.setText(account.getId());
             Log.d("MIAPP", account.getPhotoUrl().toString());
         }else{
             goLogInScreen();
@@ -87,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         photoImageView = (ImageView) findViewById(R.id.photoImageView);
         nameTextView = (TextView) findViewById(R.id.nameTextView);
-        emailTextView = (TextView) findViewById(R.id.emailTextView);
-        idTextView = (TextView) findViewById(R.id.idTextView);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -103,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         switch1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (!switch1.isChecked()){
-                    mensaje.setText("Estas desprotegido ACTIVAME");
+                    mensaje.setText("Estás desprotegido, ACTÍVAME");
                     Toast.makeText (getApplicationContext() ,"Se desactivo la aplicacion",Toast.LENGTH_SHORT).show();
                 }
                 else{
