@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 break;
             case R.id.menuSettings:
                 //opciones settings
-                //debe ir a la vista de configuraciones
+                settings();
                 break;
             case R.id.menuLogOut:
                 //opciones singOut
@@ -171,6 +171,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Intent intents = new Intent(this, MapsActivity.class);
         startActivity(intents);
     }
+
+    public void settings(){
+        Intent intents = new Intent(this, Settings.class);
+        startActivity(intents);
+    }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
