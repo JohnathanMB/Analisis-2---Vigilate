@@ -16,4 +16,14 @@
         app:layout_constraintTop_toTopOf="parent"
     />
 
+    <TextView
+        android:id="@+id/txtHM"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hola Mundo"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:padding="10dp"
+        />
+
 </android.support.constraint.ConstraintLayout>

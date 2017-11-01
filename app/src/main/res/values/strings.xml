@@ -13,4 +13,9 @@
     <string name="not_log_in">No se pudo iniciar sesión</string>
     <string name="title_activity_maps">Map</string>
 
+    //Notifications
+    <string name="NotificationTittle">¡Se un hereo!</string>
+    <string name="NotificationText">Alguien Necesita Tu Ayuda</string>
+
+
 </resources>

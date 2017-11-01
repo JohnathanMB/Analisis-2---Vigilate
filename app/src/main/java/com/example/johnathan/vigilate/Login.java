@@ -7,18 +7,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.johnathan.vigilate.Notification.Notification;
+import com.example.johnathan.vigilate.Services.ServiceLocationGPS;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.Builder;
 
 public class Login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private GoogleApiClient googleApiClient;
     public static final int SIGN_IN_CODE = 777;
     public static final String not_log_in = String.valueOf(R.string.not_log_in);
+    public Notification notification = new Notification();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +40,17 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
+
+                //se envia notificación
+                notification.sendNotification(getApplicationContext());
+
+
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent, 777);
             }
         });
+
+
     }
 
     @Override

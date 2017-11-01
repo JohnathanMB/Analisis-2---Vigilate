@@ -66,8 +66,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         //recordar cambiar el icono de este marcador
         myPosition = mMap.addMarker(new MarkerOptions().position(coordinates).title("Mi ubicacipon"));
-        //cambia la posición de la camara a la ubicación entrada por parametro
 
+        //cambia la posición de la camara a la ubicación entrada por parametro
         mMap.animateCamera(myLocation);
 
         mMap.setMaxZoomPreference(100);
