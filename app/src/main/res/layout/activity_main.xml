@@ -55,7 +55,6 @@
         android:textOff="Off"
         android:textOn="On"
         android:textSize="20dp"
-        tools:checked="false"
         android:elevation="200dp"
         />
 
@@ -69,5 +68,18 @@
         android:text="Estas desprotegido ACTIVAME"
         android:textColor="#848484"
         android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/btnStopAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:padding="15dp"
+        android:text="Detener Alarma"
+        android:textSize="30dp"
+
+        />
 </LinearLayout>
 </ScrollView>

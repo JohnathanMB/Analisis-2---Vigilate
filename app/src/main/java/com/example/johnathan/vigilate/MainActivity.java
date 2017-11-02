@@ -1,27 +1,27 @@
 package com.example.johnathan.vigilate;
 
-import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.johnathan.vigilate.Notification.Notification;
+import com.example.johnathan.vigilate.Broadcasts.BtnDetected;
+import com.example.johnathan.vigilate.Services.ServiceLocationGPS;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -39,7 +39,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private TextView mensaje;
     private TextView activar;
     private Toolbar toolbar;
-    Notification notification;
+    private BroadcastReceiver btnDetected;
+    private IntentFilter intentFilter;
+    private Button btnStopAlarm;
+    private BtnDetected btnDetectedSettings;
+    private SharedPreferences sharedPreferencesSettings;
+    private SharedPreferences.Editor editorSettings;
+    public final static String NAME_SHAREDPREFERENCE_SETTING = "settings";
+    public final static String NAME_BTNDETECTED_ACTIVED = "bntDetectedActived";
+
 
 
     @Override
@@ -63,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
+        /*
         if(result.isSuccess()){
             GoogleSignInAccount account = result.getSignInAccount();
             nameTextView.setText(account.getDisplayName());
@@ -70,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }else{
             goLogInScreen();
         }
+        */
     }
 
     private void goLogInScreen() {
@@ -82,6 +92,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //inicializo el broadcast boot
+        //sendBroadcastBoot();
+
+        //inicializo el sharedPeferenceSettings
+        sharedPreferencesSettings = getSharedPreferences(this.NAME_SHAREDPREFERENCE_SETTING, this.MODE_PRIVATE);
+        //inicialiizo el editor de sharedPrefereceSettings
+        SharedPreferences settings = getPreferences(this.MODE_PRIVATE);
+        editorSettings= settings.edit();
+
+
+        btnStopAlarm = (Button) findViewById(R.id.btnStopAlarm);
+        //btnStopAlarm.setEnabled(btnDetectedSettings.getAlarmSent());
+        if (btnDetectedSettings.getAlarmSent()){
+            btnStopAlarm.setVisibility(View.VISIBLE);
+        }else {
+            btnStopAlarm.setVisibility(View.INVISIBLE);
+        }
+
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -100,17 +130,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .build();
         switch1 =  findViewById(R.id.switch1);
         mensaje= findViewById(R.id.mensaje);
-        switch1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!switch1.isChecked()){
-                    mensaje.setText("Estás desprotegido, ACTÍVAME");
-                    Toast.makeText (getApplicationContext() ,"Se desactivo la aplicacion",Toast.LENGTH_SHORT).show();
-                }
-                else{
+
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+
+                    //se activa la función para dectectar secuencia de botón
+                    editorSettings.putBoolean(NAME_BTNDETECTED_ACTIVED, true);
+                    editorSettings.commit();
+                    //registerBtnDetected();
+                    //habilitar broadcast
+                    //getApplication().registerReceiver(btnDetected,intentFilter);
+
                     mensaje.setText("En caso de emergencia presiona 5 veces la tecla de bloqueo");
                     Toast.makeText (getApplicationContext() ,"Se activo la aplicacion",Toast.LENGTH_SHORT).show();
-                }
 
+                }else{
+
+                    //se desactiva la función para detectar secuencia de botón
+                    editorSettings.putBoolean(NAME_BTNDETECTED_ACTIVED, false);
+                    editorSettings.commit();
+
+                    //unregisterReceiver(btnDetected);
+
+                    mensaje.setText("Estás desprotegido, ACTÍVAME");
+                    Toast.makeText (getApplicationContext() ,"Se desactivo la aplicacion",Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
     }
@@ -122,9 +169,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public  boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
+            case R.id.btnStopAlarm:
+                stopServiceLocationGps();
+                btnStopAlarm.setVisibility(View.INVISIBLE);
+                break;
             case R.id.menuLocation:
                 //opciones para opcion My Location
-                location();
+                //location();
                 break;
             case R.id.menuSettings:
                 //opciones settings
@@ -183,5 +234,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
+    public void sendBroadcastBoot(){
+        Intent intent = new Intent("START_SERVICE_LISTENER");
+        sendBroadcast(intent);
+    }
+
+    public void registerBtnDetected(){
+        btnDetected = new BtnDetected();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("android.media.VOLUME_CHANGED_ACTION");
+        this.registerReceiver(btnDetected, intentFilter);
+    }
+
+    public void stopServiceLocationGps(){
+        Intent intentServiceLocation = new Intent(this, ServiceLocationGPS.class);
+        stopService(intentServiceLocation);
+    }
 
 }

@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/sonido"
         android:layout_alignEnd="@+id/idiomas"
-        android:layout_marginBottom="13dp"></Spinner>
+        android:layout_marginBottom="13dp"/>
     <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

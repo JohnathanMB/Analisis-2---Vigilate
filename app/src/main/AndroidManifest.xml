@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -44,7 +43,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
 
         <service android:name=".MyFirebaseInstanceIdService">
             <intent-filter>
@@ -61,19 +60,31 @@
         <activity android:name=".Login" />
 
         <receiver
-            android:name=".BtnDetected"
-            android:enabled="true"
-            android:exported="true">
+            android:name=".Broadcasts.BtnDetected"
+            >
             <intent-filter>
-                <action android:name="android.media.VOLUME_CHANGED_ACTION"/>
-
+                <action android:name="android.media.VOLUME_CHANGED_ACTION"></action>
             </intent-filter>
         </receiver>
 
         <service
             android:name=".Services.ServiceLocationGPS"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+        <service
+            android:name=".Services.ServiceDetectedChangedRTDB"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".Broadcasts.BroadcastBoot"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="START_SERVICE_LISTENER" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

@@ -12,15 +12,21 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class FirebaseRTDB {
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference ref = database.getReference();
 
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference ref = database.getReference();
+    private DatabaseReference newHelp = database.getReference(FirebaseRefencesRTDB.NEW_HELP);
 
-    public void addChild(double lat, double longit){
-        final DatabaseReference newHelp = database.getReference(FirebaseRefencesRTDB.NEW_HELP);
+    public void addNewHelp(double lat, double longit){
+        //final DatabaseReference newHelp = database.getReference(FirebaseRefencesRTDB.NEW_HELP);
         DatabaseReference newHelpAdded = newHelp.push();
         newHelpAdded.child(New_Help.FIELD_LAT).setValue(lat);
         newHelpAdded.child(New_Help.FIELD_LONG).setValue(longit);
     }
+
+    public DatabaseReference getNewHelp(){
+        return newHelp;
+    }
+
 
 }

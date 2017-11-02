@@ -40,11 +40,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-
-                //se envia notificación
-                notification.sendNotification(getApplicationContext());
-
-
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent, 777);
             }

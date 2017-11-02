@@ -12,30 +12,23 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 
 import com.example.johnathan.vigilate.Firebase.FirebaseRTDB;
 
 public class ServiceLocationGPS extends Service{
-
-
+    private FirebaseRTDB firebaseRTDB = new FirebaseRTDB();
     private double lat;
     private double longit;
     Context context;
 
-
+    /*
     public ServiceLocationGPS(Context context) {
         super();
         this.context = context;
         findLocation();
     }
+    */
 
-    public ServiceLocationGPS(){
-        super();
-        this.context = getApplicationContext();
-        findLocation();
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,10 +36,23 @@ public class ServiceLocationGPS extends Service{
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        context = getApplicationContext();
+        findLocation();
+        firebaseRTDB.addNewHelp(lat,longit);
+        return START_NOT_STICKY;
+    }
+
     LocationListener locListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
+
             updateLocation(location);
+
+            //hacer logica para actualizar información
+            Intent thisServiceAgain = new Intent(getApplicationContext(),ServiceLocationGPS.class);
+            getApplicationContext().startService(thisServiceAgain);
         }
 
         @Override
@@ -105,7 +111,8 @@ public class ServiceLocationGPS extends Service{
             //la actualizamos por medio del método hecho anteriormete
             updateLocation(location);
             //indicamos que actualice la ubicación actual cada 15 segundos
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 0, locListener);
+            //o cada que la ubicación cambie 5 metros
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000*15, 5, locListener);
         }
 
     }
