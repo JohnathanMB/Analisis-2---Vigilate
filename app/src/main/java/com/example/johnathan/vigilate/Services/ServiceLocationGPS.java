@@ -22,6 +22,7 @@ public class ServiceLocationGPS extends Service{
     private double lat;
     private double longit;
     Context context;
+    SharedPreferences setting;
 
     /*
     public ServiceLocationGPS(Context context) {
@@ -42,7 +43,12 @@ public class ServiceLocationGPS extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
         context = getApplicationContext();
         findLocation();
-        firebaseRTDB.addNewHelp(lat,longit);
+        //tomo el key del usuario que manda la alerta
+        setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
+        String idUserLocal = setting.getString(ReferencesSettings.ID_USER_LOCAL,"");
+        if(!idUserLocal.equals("")){
+            firebaseRTDB.addNewHelp(idUserLocal,lat,longit);
+        }
         return START_STICKY;
     }
 
@@ -53,7 +59,7 @@ public class ServiceLocationGPS extends Service{
             updateLocation(location);
 
             //hacer logica para actualizar ubiación gps
-            SharedPreferences setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
+            setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
             boolean updateActived = setting.getBoolean(ReferencesSettings.UPDATE_LOCATION_ACTIVED,false);
             if (updateActived){
                 Intent thisServiceAgain = new Intent(getApplicationContext(),ServiceLocationGPS.class);
@@ -119,7 +125,7 @@ public class ServiceLocationGPS extends Service{
             updateLocation(location);
             //indicamos que actualice la ubicación actual cada 10 segundos
             //o cada que la ubicación cambie 5 metros
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000*10, 5, locListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000*5, 5, locListener);
         }
 
     }

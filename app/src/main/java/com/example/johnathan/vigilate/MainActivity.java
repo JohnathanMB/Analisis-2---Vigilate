@@ -86,7 +86,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Glide.with(this)
                     .load(account.getPhotoUrl())
                     .into(photoImageView);
-            String id = account.getId();
+            String idUserLocal = account.getId();
+            editorSettings.putString(ReferencesSettings.ID_USER_LOCAL,idUserLocal);
+            editorSettings.commit();
             Log.d("MIAPP", account.getPhotoUrl().toString());
         }else{
             goLogInScreen();

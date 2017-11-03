@@ -9,4 +9,7 @@ public class ReferencesSettings {
     public final static String NAME_BTNDETECTED_ACTIVED = "bntDetectedActived";
     public final static String BTN_STOPSERVICE_ACTIVED = "btnServiceActived";
     public final static String UPDATE_LOCATION_ACTIVED = "update_location_actived";
+    public final static String ID_USER_LOCAL = "id_user_local";
+    public final static String ID_USER = "id_user";
+
 }

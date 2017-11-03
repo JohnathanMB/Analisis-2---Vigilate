@@ -1,14 +1,22 @@
 package com.example.johnathan.vigilate;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
+
+import com.example.johnathan.vigilate.Firebase.FirebaseRefencesRTDB;
+import com.example.johnathan.vigilate.Firebase.New_Help;
+import com.example.johnathan.vigilate.PreferenceReferences.ReferencesSettings;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,6 +25,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -24,6 +37,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker myPosition;
     double lat = 0.0;
     double lng = 0.0;
+    private FirebaseDatabase database;
+    private DatabaseReference newHelpUserId;
+    private SharedPreferences setting;
 
 
     @Override
@@ -50,9 +66,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        //la notificación me da el key del usuario que envió la alarma
+        SharedPreferences setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
+        String idUser = setting.getString(ReferencesSettings.ID_USER,"");
+
+        if (!idUser.equals("")){
+            //Descargo información desde firebase
+            database = FirebaseDatabase.getInstance();
+            newHelpUserId = database.getReference(FirebaseRefencesRTDB.NEW_HELP+"/"+idUser);
+            newHelpUserId.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    double latUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LAT).getValue().toString());
+                    double longUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LONG).getValue().toString());
+
+                    Toast.makeText(getApplicationContext(), ""+latUser+" , "+longUser, Toast.LENGTH_LONG).show();
+                    addMarker(latUser,longUser);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
         //Obtiene la ubicación actual, crea un marker en esa posición en google maps
         //y monitorea los cambios en la ubicación cada 15 segundos
-        findLocation();
+        //findLocation();
 
     }
 
@@ -65,7 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             myPosition.remove();
         }
         //recordar cambiar el icono de este marcador
-        myPosition = mMap.addMarker(new MarkerOptions().position(coordinates).title("Mi ubicacipon"));
+        myPosition = mMap.addMarker(new MarkerOptions().position(coordinates).title("Ayuda!!!"));
 
         //cambia la posición de la camara a la ubicación entrada por parametro
         mMap.animateCamera(myLocation);

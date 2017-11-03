@@ -17,11 +17,15 @@ public class FirebaseRTDB {
     private DatabaseReference ref = database.getReference();
     private DatabaseReference newHelp = database.getReference(FirebaseRefencesRTDB.NEW_HELP);
 
-    public void addNewHelp(double lat, double longit){
-        //final DatabaseReference newHelp = database.getReference(FirebaseRefencesRTDB.NEW_HELP);
+    public void addNewHelp(String idUser, double lat, double longit){
+        DatabaseReference newHelp = database.getReference(FirebaseRefencesRTDB.NEW_HELP+"/"+idUser);
+        newHelp.child(New_Help.FIELD_LAT).setValue(lat);
+        newHelp.child(New_Help.FIELD_LONG).setValue(longit);
+        /*
         DatabaseReference newHelpAdded = newHelp.push();
         newHelpAdded.child(New_Help.FIELD_LAT).setValue(lat);
         newHelpAdded.child(New_Help.FIELD_LONG).setValue(longit);
+        */
     }
 
     public DatabaseReference getNewHelp(){

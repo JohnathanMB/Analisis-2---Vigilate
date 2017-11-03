@@ -28,6 +28,7 @@ public class Notification {
     public void sendNotification(Context context){
         //construir la acción post press en notificación
         Intent intent = new Intent(context, MapsActivity.class);
+        //intent.putExtra("idUser",userId);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,0,intent,0);
 
         //sound notification

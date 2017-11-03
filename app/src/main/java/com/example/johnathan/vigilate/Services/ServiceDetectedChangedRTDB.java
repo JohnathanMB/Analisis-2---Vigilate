@@ -3,6 +3,7 @@ package com.example.johnathan.vigilate.Services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.example.johnathan.vigilate.Firebase.FirebaseRTDB;
 import com.example.johnathan.vigilate.Firebase.New_Help;
 import com.example.johnathan.vigilate.MapsActivity;
 import com.example.johnathan.vigilate.Notification.Notification;
+import com.example.johnathan.vigilate.PreferenceReferences.ReferencesSettings;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +30,8 @@ public class ServiceDetectedChangedRTDB extends Service {
     FirebaseRTDB firebaseRTDB = new FirebaseRTDB();
     Notification notification = new Notification();
     ServiceLocationGPS serviceLocationGPS;
+    SharedPreferences setting;
+    SharedPreferences.Editor editorSettings;
 
 
 
@@ -41,7 +45,7 @@ public class ServiceDetectedChangedRTDB extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         detectedNewHelp();
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
     public void detectedNewHelp(){
@@ -53,10 +57,28 @@ public class ServiceDetectedChangedRTDB extends Service {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                //tomo las cordandas que llegan desde firebase
+                //tomo el key del llamado de auxilio que llegan desde firebase
                 String key = dataSnapshot.getKey();
-                //enviar información del hijo creado a la notificación
-                notification.sendNotification(getApplicationContext());
+
+                //se agrega el id al sharedPreference
+                setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
+                editorSettings = setting.edit();
+                editorSettings.putString(ReferencesSettings.ID_USER,key);
+                editorSettings.commit();
+
+                //retomo el key que agregué al Shared
+                //para verificar que si se haya agregado correctamente
+                String userId = setting.getString(ReferencesSettings.ID_USER,"");
+                String userIdLocal = setting.getString(ReferencesSettings.ID_USER_LOCAL,"");
+                //para saber que no le llegue el mismo usuario que envía la notificación
+                if(!userId.equals(userIdLocal)){
+                    //para verificar que el key obtenido de firebase si haya guardado correctamente
+                    if (!userId.equals("")){
+                        //se envia notificación
+                        notification.sendNotification(getApplicationContext());
+                    }
+
+                }
 
                 /*
                 double latFromHelp = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LAT).getValue().toString());
@@ -75,13 +97,6 @@ public class ServiceDetectedChangedRTDB extends Service {
                     Log.i("TAG","Distancia no debida, no se manda notificación "+distance);
                 }
                 */
-
-
-
-                //enviar información del hijo creado a la notificación
-                //notification.sendNotification(getApplicationContext());
-
-                //Intent i = new Intent(this, MapsActivity.class);
             }
 
             @Override

@@ -39,13 +39,16 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     protected void onStart() {
         super.onStart();
 
-        firebaseAuth.addAuthStateListener(firebaseAuthListener);
+        //firebaseAuth.addAuthStateListener(firebaseAuthListener);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //inicializo el broadcast boot
+        sendBroadcastBoot();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -139,8 +142,14 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     @Override
     protected void onStop() {
         super.onStop();
+        /*
         if (firebaseAuthListener != null){
             firebaseAuth.removeAuthStateListener(firebaseAuthListener);
         }
+        */
+    }
+    public void sendBroadcastBoot(){
+        Intent intent = new Intent("START_SERVICE_LISTENER");
+        sendBroadcast(intent);
     }
 }
