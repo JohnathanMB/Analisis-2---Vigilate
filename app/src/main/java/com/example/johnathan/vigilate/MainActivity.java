@@ -1,5 +1,6 @@
 package com.example.johnathan.vigilate;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.johnathan.vigilate.Broadcasts.BtnDetected;
+import com.example.johnathan.vigilate.Firebase.FirebaseRTDB;
 import com.example.johnathan.vigilate.PreferenceReferences.ReferencesSettings;
 import com.example.johnathan.vigilate.Services.ServiceLocationGPS;
 import com.google.android.gms.auth.api.Auth;
@@ -53,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private SharedPreferences.Editor editorSettings;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
-
-
 
 
 
@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         mensaje= findViewById(R.id.mensaje);
 
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
@@ -160,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED, true);
                     editorSettings.commit();
 
-                    mensaje.setText("En caso de emergencia presiona 5 veces la tecla de bloqueo");
-                    Toast.makeText (getApplicationContext() ,"Se activo la aplicacion",Toast.LENGTH_SHORT).show();
+                    mensaje.setText("En caso de emergencia presiona 1 vez cualquier tecla de volumen");
+                    mensaje.setBackgroundColor(getResources().getColor(R.color.colorBtnDetectedActived));
 
                 }else{
 
@@ -170,7 +171,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     editorSettings.commit();
 
                     mensaje.setText("Estás desprotegido, ACTÍVAME");
-                    Toast.makeText (getApplicationContext() ,"Se desactivo la aplicacion",Toast.LENGTH_SHORT).show();
+                    mensaje.setBackgroundColor(getResources().getColor(R.color.colorBtnDectedUnActived));
+
 
                 }
             }
@@ -194,10 +196,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public  boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
-            case R.id.menuLocation:
-                //opciones para opcion My Location
-                //location();
-                break;
             case R.id.menuSettings:
                 //opciones settings
                 settings();
@@ -290,6 +288,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     //desactivo la actualización de la ubicación gps
                     editorSettings.putBoolean(ReferencesSettings.UPDATE_LOCATION_ACTIVED,false);
                     editorSettings.commit();
+                    String idLocal = sharedPreferencesSettings.getString(ReferencesSettings.ID_USER_LOCAL,"");
+                    if(!idLocal.equals("")){
+                        FirebaseRTDB firebaseRTDB = new FirebaseRTDB();
+                        firebaseRTDB.deleteNewHelp(this,idLocal);
+                    }
                 }else{
                     Toast.makeText(this,"Actualmente NO tiene alarmas Activadas",Toast.LENGTH_SHORT).show();
                 }

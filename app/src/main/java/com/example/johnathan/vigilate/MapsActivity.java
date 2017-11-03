@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 
 import com.example.johnathan.vigilate.Firebase.FirebaseRefencesRTDB;
@@ -77,11 +78,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             newHelpUserId.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    double latUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LAT).getValue().toString());
-                    double longUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LONG).getValue().toString());
+                    try{
+                        double latUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LAT).getValue().toString());
+                        double longUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LONG).getValue().toString());
 
-                    Toast.makeText(getApplicationContext(), ""+latUser+" , "+longUser, Toast.LENGTH_LONG).show();
-                    addMarker(latUser,longUser);
+                    }catch (Exception e){
+                        Toast.makeText(getApplicationContext(),
+                                "Problemas al descargar ubicación de la alerta",
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+
                 }
 
                 @Override

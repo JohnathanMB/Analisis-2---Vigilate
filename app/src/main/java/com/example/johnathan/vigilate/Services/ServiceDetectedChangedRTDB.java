@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Toast;
 
 import com.example.johnathan.vigilate.Broadcasts.BroadcastBoot;
@@ -44,7 +45,11 @@ public class ServiceDetectedChangedRTDB extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        detectedNewHelp();
+        setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
+        boolean notificationActived = setting.getBoolean(ReferencesSettings.NOTIFICATION_ACTIVED,true);
+        if (notificationActived){
+            detectedNewHelp();
+        }
         return START_STICKY;
     }
 

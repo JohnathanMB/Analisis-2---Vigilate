@@ -11,5 +11,8 @@ public class ReferencesSettings {
     public final static String UPDATE_LOCATION_ACTIVED = "update_location_actived";
     public final static String ID_USER_LOCAL = "id_user_local";
     public final static String ID_USER = "id_user";
+    public final static String NOTIFICATION_ACTIVED = "notificacion_activada";
+    public final static String LAT_LOCAL = "lat_local";
+    public final static String LONG_LOCAL = "long_local";
 
 }

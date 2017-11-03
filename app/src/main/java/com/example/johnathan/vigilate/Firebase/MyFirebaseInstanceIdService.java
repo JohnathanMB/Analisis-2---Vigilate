@@ -1,4 +1,4 @@
-package com.example.johnathan.vigilate;
+package com.example.johnathan.vigilate.Firebase;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;

@@ -47,12 +47,12 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
 
-        <service android:name=".MyFirebaseInstanceIdService">
+        <service android:name=".Firebase.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".MyFirebaseMessageService">
+        <service android:name=".Firebase.MyFirebaseMessageService">
             <intent-filter>
                 <action android:name="com.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

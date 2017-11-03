@@ -60,14 +60,17 @@
 
     <TextView
         android:id="@+id/mensaje"
-        android:paddingTop="15dp"
+        android:layout_margin="5dp"
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:gravity="center"
         android:text="Estas desprotegido ACTIVAME"
-        android:textColor="#848484"
-        android:textSize="25dp" />
+        android:textColor="@color/colorDefaultBlack"
+        android:textSize="25dp"
+        android:background="@color/colorBtnDectedUnActived"
+        />
 
     <Button
         android:id="@+id/btnStopAlarm"

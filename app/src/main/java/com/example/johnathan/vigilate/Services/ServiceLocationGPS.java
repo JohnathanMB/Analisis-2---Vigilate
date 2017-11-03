@@ -23,6 +23,7 @@ public class ServiceLocationGPS extends Service{
     private double longit;
     Context context;
     SharedPreferences setting;
+    SharedPreferences.Editor editorSettings;
 
     /*
     public ServiceLocationGPS(Context context) {
@@ -45,10 +46,17 @@ public class ServiceLocationGPS extends Service{
         findLocation();
         //tomo el key del usuario que manda la alerta
         setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
+        editorSettings = setting.edit();
         String idUserLocal = setting.getString(ReferencesSettings.ID_USER_LOCAL,"");
+        String latString = ""+lat;
+        String longString = ""+longit;
+
         if(!idUserLocal.equals("")){
             firebaseRTDB.addNewHelp(idUserLocal,lat,longit);
         }
+        editorSettings.putString(ReferencesSettings.LAT_LOCAL,latString);
+        editorSettings.putString(ReferencesSettings.LONG_LOCAL, longString);
+        editorSettings.commit();
         return START_STICKY;
     }
 
