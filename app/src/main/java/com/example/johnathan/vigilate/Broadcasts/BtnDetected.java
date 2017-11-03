@@ -7,7 +7,10 @@ import android.content.SharedPreferences;
 
 import com.example.johnathan.vigilate.Firebase.FirebaseRTDB;
 import com.example.johnathan.vigilate.MainActivity;
+import com.example.johnathan.vigilate.PreferenceReferences.ReferencesSettings;
 import com.example.johnathan.vigilate.Services.ServiceLocationGPS;
+
+
 
 /**
  * Created by JohnathanMB on 30/10/2017.
@@ -30,23 +33,22 @@ public class BtnDetected extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
 
-        settings = context.getSharedPreferences(MainActivity.NAME_SHAREDPREFERENCE_SETTING, Context.MODE_PRIVATE);
+        settings = context.getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, Context.MODE_PRIVATE);
 
         //logicia sobre si está activo la función de detectar el botón o no
-        boolean btnDectedActived = settings.getBoolean(MainActivity.NAME_BTNDETECTED_ACTIVED,false);
+        boolean btnDectedActived = settings.getBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED,false);
         if(btnDectedActived){
             alarmSent = true;
+            SharedPreferences.Editor editorSettings = settings.edit();
+            //activ la funcionalidad del botón btnStopService
+            editorSettings.putBoolean(ReferencesSettings.BTN_STOPSERVICE_ACTIVED,true);
+            //activo la actualización de la ubicación exacta de quien manda la alarma
+            editorSettings.putBoolean(ReferencesSettings.UPDATE_LOCATION_ACTIVED,true);
+            editorSettings.commit();
             //falta lógica para secuencia de botones
             Intent serviceSendLocation = new Intent(context, ServiceLocationGPS.class);
             context.startService(serviceSendLocation);
         }
     }
 
-    public void setAlarmSent(Boolean changeAlarm){
-        alarmSent = changeAlarm;
-    }
-
-    public boolean getAlarmSent(){
-        return alarmSent;
-    }
 }

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +20,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.johnathan.vigilate.Broadcasts.BtnDetected;
+import com.example.johnathan.vigilate.PreferenceReferences.ReferencesSettings;
 import com.example.johnathan.vigilate.Services.ServiceLocationGPS;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -29,8 +33,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private ImageView photoImageView;
     private TextView nameTextView;
@@ -45,16 +51,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private BtnDetected btnDetectedSettings;
     private SharedPreferences sharedPreferencesSettings;
     private SharedPreferences.Editor editorSettings;
-    public final static String NAME_SHAREDPREFERENCE_SETTING = "settings";
-    public final static String NAME_BTNDETECTED_ACTIVED = "bntDetectedActived";
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener firebaseAuthListener;
+
+
 
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
 
+        //firebaseAuth.addAuthStateListener(firebaseAuthListener);
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
 
         if(opr.isDone()){
             GoogleSignInResult result = opr.get();
@@ -67,19 +76,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             });
         }
-
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        /*
+
         if(result.isSuccess()){
             GoogleSignInAccount account = result.getSignInAccount();
             nameTextView.setText(account.getDisplayName());
+            Glide.with(this)
+                    .load(account.getPhotoUrl())
+                    .into(photoImageView);
+            String id = account.getId();
             Log.d("MIAPP", account.getPhotoUrl().toString());
         }else{
             goLogInScreen();
         }
-        */
+
     }
 
     private void goLogInScreen() {
@@ -97,28 +109,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         //sendBroadcastBoot();
 
         //inicializo el sharedPeferenceSettings
-        sharedPreferencesSettings = getSharedPreferences(this.NAME_SHAREDPREFERENCE_SETTING, this.MODE_PRIVATE);
+        sharedPreferencesSettings = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, this.MODE_PRIVATE);
         //inicialiizo el editor de sharedPrefereceSettings
-        SharedPreferences settings = getPreferences(this.MODE_PRIVATE);
-        editorSettings= settings.edit();
-
+        editorSettings= sharedPreferencesSettings.edit();
+        editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED,false);
+        editorSettings.commit();
 
         btnStopAlarm = (Button) findViewById(R.id.btnStopAlarm);
-        //btnStopAlarm.setEnabled(btnDetectedSettings.getAlarmSent());
-        if (btnDetectedSettings.getAlarmSent()){
-            btnStopAlarm.setVisibility(View.VISIBLE);
-        }else {
-            btnStopAlarm.setVisibility(View.INVISIBLE);
-        }
-
-
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
         photoImageView = (ImageView) findViewById(R.id.photoImageView);
         nameTextView = (TextView) findViewById(R.id.nameTextView);
+
+        /*
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if(user != null){
+                    setUserdata(user);
+                }else{
+                    goLogInScreen();
+                }
+
+            }
+        };
+        */
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -137,11 +155,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 if(isChecked){
 
                     //se activa la función para dectectar secuencia de botón
-                    editorSettings.putBoolean(NAME_BTNDETECTED_ACTIVED, true);
+                    editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED, true);
                     editorSettings.commit();
-                    //registerBtnDetected();
-                    //habilitar broadcast
-                    //getApplication().registerReceiver(btnDetected,intentFilter);
 
                     mensaje.setText("En caso de emergencia presiona 5 veces la tecla de bloqueo");
                     Toast.makeText (getApplicationContext() ,"Se activo la aplicacion",Toast.LENGTH_SHORT).show();
@@ -149,10 +164,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }else{
 
                     //se desactiva la función para detectar secuencia de botón
-                    editorSettings.putBoolean(NAME_BTNDETECTED_ACTIVED, false);
+                    editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED, false);
                     editorSettings.commit();
-
-                    //unregisterReceiver(btnDetected);
 
                     mensaje.setText("Estás desprotegido, ACTÍVAME");
                     Toast.makeText (getApplicationContext() ,"Se desactivo la aplicacion",Toast.LENGTH_SHORT).show();
@@ -162,17 +175,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (firebaseAuthListener != null){
+            firebaseAuth.removeAuthStateListener(firebaseAuthListener);
+        }
+    }
+
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
+
+
     public  boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
-            case R.id.btnStopAlarm:
-                stopServiceLocationGps();
-                btnStopAlarm.setVisibility(View.INVISIBLE);
-                break;
             case R.id.menuLocation:
                 //opciones para opcion My Location
                 //location();
@@ -193,6 +212,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
     public void logOut() {
+        //firebaseAuth.signOut();
+
         Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
@@ -206,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     public void revoke(View view) {
+        //firebaseAuth.signOut();
         Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
@@ -251,4 +273,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         stopService(intentServiceLocation);
     }
 
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnStopAlarm:
+                boolean btnActive = sharedPreferencesSettings.getBoolean(ReferencesSettings.BTN_STOPSERVICE_ACTIVED,false);
+                if(btnActive){
+                    Toast.makeText(this,"Se ha descativado la alarma",Toast.LENGTH_SHORT).show();
+                    stopServiceLocationGps();
+
+                    //desactivo la función de este botón
+                    editorSettings.putBoolean(ReferencesSettings.BTN_STOPSERVICE_ACTIVED,false);
+                    //desactivo la actualización de la ubicación gps
+                    editorSettings.putBoolean(ReferencesSettings.UPDATE_LOCATION_ACTIVED,false);
+                    editorSettings.commit();
+                }else{
+                    Toast.makeText(this,"Actualmente NO tiene alarmas Activadas",Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    public void setUserdata(FirebaseUser user) {
+        nameTextView.setText(user.getDisplayName());
+        String correo = user.getEmail();
+        String token = user.getUid();
+        Glide.with(this)
+                .load(user.getPhotoUrl())
+                .into(photoImageView);
+    }
 }

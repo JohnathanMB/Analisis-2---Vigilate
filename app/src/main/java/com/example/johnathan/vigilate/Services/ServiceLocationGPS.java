@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.example.johnathan.vigilate.Firebase.FirebaseRTDB;
+import com.example.johnathan.vigilate.PreferenceReferences.ReferencesSettings;
 
 public class ServiceLocationGPS extends Service{
     private FirebaseRTDB firebaseRTDB = new FirebaseRTDB();
@@ -41,7 +43,7 @@ public class ServiceLocationGPS extends Service{
         context = getApplicationContext();
         findLocation();
         firebaseRTDB.addNewHelp(lat,longit);
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     LocationListener locListener = new LocationListener() {
@@ -50,9 +52,14 @@ public class ServiceLocationGPS extends Service{
 
             updateLocation(location);
 
-            //hacer logica para actualizar información
-            Intent thisServiceAgain = new Intent(getApplicationContext(),ServiceLocationGPS.class);
-            getApplicationContext().startService(thisServiceAgain);
+            //hacer logica para actualizar ubiación gps
+            SharedPreferences setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
+            boolean updateActived = setting.getBoolean(ReferencesSettings.UPDATE_LOCATION_ACTIVED,false);
+            if (updateActived){
+                Intent thisServiceAgain = new Intent(getApplicationContext(),ServiceLocationGPS.class);
+                getApplicationContext().startService(thisServiceAgain);
+            }
+
         }
 
         @Override
@@ -110,9 +117,9 @@ public class ServiceLocationGPS extends Service{
         if (location != null && locationManager != null){
             //la actualizamos por medio del método hecho anteriormete
             updateLocation(location);
-            //indicamos que actualice la ubicación actual cada 15 segundos
+            //indicamos que actualice la ubicación actual cada 10 segundos
             //o cada que la ubicación cambie 5 metros
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000*15, 5, locListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000*10, 5, locListener);
         }
 
     }

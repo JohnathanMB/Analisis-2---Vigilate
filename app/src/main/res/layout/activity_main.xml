@@ -79,7 +79,7 @@
         android:padding="15dp"
         android:text="Detener Alarma"
         android:textSize="30dp"
-
+        android:onClick="onClick"
         />
 </LinearLayout>
 </ScrollView>

@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "482046758268-e8914o69hm490ce7ge2qo6ivclcrlqgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.johnathan.vigilate",
+            "certificate_hash": "2cda341e7767b5d39b583481e42946ec349d6c62"
+          }
+        },
+        {
           "client_id": "482046758268-fsmgchffom7i0kh1qop2bfeolg5n3in6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBhMN7SeSwwPYBlZoFG4Tbh8Vxrx7_UYuA"
+          "current_key": "AIzaSyBcTTPQUEOYeiuplDGKTJ7oaj-eeVDAAd8"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482046758268-fsmgchffom7i0kh1qop2bfeolg5n3in6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
