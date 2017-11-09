@@ -2,6 +2,7 @@
 <ScrollView
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:background="@drawable/gradient_background"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,21 +15,13 @@
     <include layout="@layout/toolbar"
 
         />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/app_name"
-        android:textStyle="bold"
-        android:textSize="40sp" />
+
 
     <ImageView
         android:id="@+id/photoImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_margin="8dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
         android:background="@color/colorAccent"
         android:elevation="50dp"
@@ -42,7 +35,10 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="Nombre de usuario"
-        android:textSize="20dp" />
+        android:textStyle="italic"
+        android:textSize="20dp"
+        android:textColor="#ffffff"
+        />
 
 
     <Switch
@@ -51,7 +47,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:padding="10dp"
-        android:text="ACTIVAR"
+        android:text="ACTIVAR DETECTOR"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
         android:textOff="Off"
         android:textOn="On"
         android:textSize="20dp"
@@ -66,10 +64,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Estas desprotegido ACTIVAME"
-        android:textColor="@color/colorDefaultBlack"
+        android:text="Estas desprotegido ¡ACTIVAME!"
+        android:textColor="#000000"
         android:textSize="25dp"
-        android:background="@color/colorBtnDectedUnActived"
+        android:textStyle="bold"
+        android:background="@drawable/gradient_message_detected_no_actived"
         />
 
     <Button
@@ -80,8 +79,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:padding="15dp"
-        android:text="Detener Alarma"
-        android:textSize="30dp"
+        android:text="Detener Alerta"
+        android:textSize="20dp"
         android:onClick="onClick"
         />
 </LinearLayout>

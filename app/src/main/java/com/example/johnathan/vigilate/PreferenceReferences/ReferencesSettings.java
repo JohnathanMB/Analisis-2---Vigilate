@@ -14,5 +14,6 @@ public class ReferencesSettings {
     public final static String NOTIFICATION_ACTIVED = "notificacion_activada";
     public final static String LAT_LOCAL = "lat_local";
     public final static String LONG_LOCAL = "long_local";
+    public final static String ALERT_SENT = "ALERT_SENT";
 
 }

@@ -47,7 +47,7 @@ public class ServiceDetectedChangedRTDB extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
         boolean notificationActived = setting.getBoolean(ReferencesSettings.NOTIFICATION_ACTIVED,true);
-        if (notificationActived){
+        if (notificationActived || !notificationActived){
             detectedNewHelp();
         }
         return START_STICKY;

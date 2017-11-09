@@ -1,18 +1,16 @@
 package com.example.johnathan.vigilate;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 
 import com.example.johnathan.vigilate.Firebase.FirebaseRefencesRTDB;
@@ -23,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -36,6 +35,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Marker myPosition;
+    private Marker alertPosition;
     double lat = 0.0;
     double lng = 0.0;
     private FirebaseDatabase database;
@@ -67,6 +67,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        //se obtiene la ubicación del dispositivo actual
+        //y se marca en el mapa
+        findLocation();
+
         //la notificación me da el key del usuario que envió la alarma
         SharedPreferences setting = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, MODE_PRIVATE);
         String idUser = setting.getString(ReferencesSettings.ID_USER,"");
@@ -81,12 +85,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     try{
                         double latUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LAT).getValue().toString());
                         double longUser = Double.parseDouble(dataSnapshot.child(New_Help.FIELD_LONG).getValue().toString());
+                        addMarker(latUser, longUser);
 
                     }catch (Exception e){
+                        Log.i("Take location", e.getMessage());
                         Toast.makeText(getApplicationContext(),
-                                "Problemas al descargar ubicación de la alerta",
+                                "Al parecer ya se solucionó el problema",
                                 Toast.LENGTH_LONG)
                                 .show();
+                        alertPosition.remove();
+                        //sleep(5);
                     }
 
                 }
@@ -97,24 +105,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
         }
-
-
-        //Obtiene la ubicación actual, crea un marker en esa posición en google maps
-        //y monitorea los cambios en la ubicación cada 15 segundos
-        //findLocation();
-
     }
 
     //Método para agregar markador en el mapa
     public void addMarker(double lat, double lng) {
         LatLng coordinates = new LatLng(lat, lng);
-        CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(coordinates,16);
+        CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(coordinates,17);
         //Sí el marcador ya existe, se elimina
-        if (myPosition != null) {
-            myPosition.remove();
+        if (alertPosition != null) {
+            mMap.addMarker(new MarkerOptions()
+                    .anchor(0.0f,1.0f)
+                    .position(alertPosition.getPosition())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_point_mini)));
+            alertPosition.remove();
         }
         //recordar cambiar el icono de este marcador
-        myPosition = mMap.addMarker(new MarkerOptions().position(coordinates).title("Ayuda!!!"));
+        alertPosition = mMap.addMarker(new MarkerOptions()
+                .anchor(0.0f,1.0f)
+                .position(coordinates)
+                .title("Ayuda!!!")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mini_logo)));
 
         //cambia la posición de la camara a la ubicación entrada por parametro
         mMap.animateCamera(myLocation);
@@ -127,8 +137,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (location != null) {
             lat = location.getLatitude();
             lng = location.getLongitude();
-            addMarker(lat, lng);
+            addMarkerActualMe(lat, lng);
         }
+    }
+
+    private void addMarkerActualMe(double lat, double lng) {
+        LatLng coordinates = new LatLng(lat, lng);
+        CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(coordinates,17);
+        //Sí el marcador ya existe, se elimina
+        if (myPosition != null) {
+            myPosition.remove();
+        }
+        //recordar cambiar el icono de este marcador
+        myPosition = mMap.addMarker(new MarkerOptions()
+                .position(coordinates)
+                .title("Este soy yo"));
+
+        //cambia la posición de la camara a la ubicación entrada por parametro
+        mMap.animateCamera(myLocation);
+
+        mMap.setMaxZoomPreference(100);
     }
 
     LocationListener locListener = new LocationListener() {
@@ -174,6 +202,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         updateLocation(location);
         //indicamos que actualice la ubicación actual cada 15 segundos
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 0, locListener);
+    }
+
+    private void sleep (int n){
+        try {
+            Thread.sleep(1000*n);
+        }catch (Exception e){
+
+        }
     }
 
 }

@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +39,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.lang.ref.Reference;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
@@ -76,6 +80,73 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
             });
         }
+
+    }
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+
+        //inicializo el broadcast boot
+        sendBroadcastBoot();
+
+        //inicializo el sharedPeferenceSettings
+        sharedPreferencesSettings = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, this.MODE_PRIVATE);
+        //inicialiizo el editor de sharedPrefereceSettings
+        editorSettings= sharedPreferencesSettings.edit();
+        editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED,false);
+        editorSettings.commit();
+
+        btnStopAlarm = (Button) findViewById(R.id.btnStopAlarm);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        photoImageView = (ImageView) findViewById(R.id.photoImageView);
+        nameTextView = (TextView) findViewById(R.id.nameTextView);
+
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        switch1 =  findViewById(R.id.switch1);
+        mensaje= findViewById(R.id.mensaje);
+
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+
+                    //se activa la función para dectectar secuencia de botón
+                    editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED, true);
+                    editorSettings.commit();
+
+                    mensaje.setText("En caso de emergencia presiona 1 vez cualquier tecla de volumen");
+                    mensaje.setBackground(getResources().getDrawable(R.drawable.gradient_message_detected_actived));
+
+                }else{
+
+                    //se desactiva la función para detectar secuencia de botón
+                    editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED, false);
+                    editorSettings.commit();
+
+                    mensaje.setText("Estás desprotegido, ACTÍVAME");
+                    mensaje.setBackground(getResources().getDrawable(R.drawable.gradient_message_detected_no_actived));
+
+
+                }
+            }
+        });
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -100,83 +171,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Intent intent = new Intent(this, Login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //inicializo el broadcast boot
-        //sendBroadcastBoot();
-
-        //inicializo el sharedPeferenceSettings
-        sharedPreferencesSettings = getSharedPreferences(ReferencesSettings.NAME_SHAREDPREFERENCE_SETTING, this.MODE_PRIVATE);
-        //inicialiizo el editor de sharedPrefereceSettings
-        editorSettings= sharedPreferencesSettings.edit();
-        editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED,false);
-        editorSettings.commit();
-
-        btnStopAlarm = (Button) findViewById(R.id.btnStopAlarm);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        photoImageView = (ImageView) findViewById(R.id.photoImageView);
-        nameTextView = (TextView) findViewById(R.id.nameTextView);
-
-        /*
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    setUserdata(user);
-                }else{
-                    goLogInScreen();
-                }
-
-            }
-        };
-        */
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        switch1 =  findViewById(R.id.switch1);
-        mensaje= findViewById(R.id.mensaje);
-
-        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-
-                    //se activa la función para dectectar secuencia de botón
-                    editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED, true);
-                    editorSettings.commit();
-
-                    mensaje.setText("En caso de emergencia presiona 1 vez cualquier tecla de volumen");
-                    mensaje.setBackgroundColor(getResources().getColor(R.color.colorBtnDetectedActived));
-
-                }else{
-
-                    //se desactiva la función para detectar secuencia de botón
-                    editorSettings.putBoolean(ReferencesSettings.NAME_BTNDETECTED_ACTIVED, false);
-                    editorSettings.commit();
-
-                    mensaje.setText("Estás desprotegido, ACTÍVAME");
-                    mensaje.setBackgroundColor(getResources().getColor(R.color.colorBtnDectedUnActived));
-
-
-                }
-            }
-        });
     }
 
     @Override
@@ -282,11 +276,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 if(btnActive){
                     Toast.makeText(this,"Se ha descativado la alarma",Toast.LENGTH_SHORT).show();
                     stopServiceLocationGps();
-
                     //desactivo la función de este botón
                     editorSettings.putBoolean(ReferencesSettings.BTN_STOPSERVICE_ACTIVED,false);
                     //desactivo la actualización de la ubicación gps
                     editorSettings.putBoolean(ReferencesSettings.UPDATE_LOCATION_ACTIVED,false);
+                    editorSettings.putBoolean(ReferencesSettings.ALERT_SENT, false);
                     editorSettings.commit();
                     String idLocal = sharedPreferencesSettings.getString(ReferencesSettings.ID_USER_LOCAL,"");
                     if(!idLocal.equals("")){
@@ -308,4 +302,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .load(user.getPhotoUrl())
                 .into(photoImageView);
     }
+
+
 }

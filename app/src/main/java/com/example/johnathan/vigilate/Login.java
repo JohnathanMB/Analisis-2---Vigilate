@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         setContentView(R.layout.activity_login);
 
         //inicializo el broadcast boot
-        sendBroadcastBoot();
+        //sendBroadcastBoot();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 

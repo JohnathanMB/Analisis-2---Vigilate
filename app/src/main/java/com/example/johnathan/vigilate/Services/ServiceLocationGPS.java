@@ -51,7 +51,7 @@ public class ServiceLocationGPS extends Service{
         String latString = ""+lat;
         String longString = ""+longit;
 
-        if(!idUserLocal.equals("")){
+        if(!idUserLocal.equals("") && lat!= 0 && longit != 0){
             firebaseRTDB.addNewHelp(idUserLocal,lat,longit);
         }
         editorSettings.putString(ReferencesSettings.LAT_LOCAL,latString);
@@ -133,7 +133,7 @@ public class ServiceLocationGPS extends Service{
             updateLocation(location);
             //indicamos que actualice la ubicación actual cada 10 segundos
             //o cada que la ubicación cambie 5 metros
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000*5, 5, locListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, locListener);
         }
 
     }

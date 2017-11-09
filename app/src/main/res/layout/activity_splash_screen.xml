@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context="com.example.johnathan.vigilate.SplashScreenActivity">
 
     <ImageView
@@ -29,8 +30,10 @@
         android:layout_marginTop="8dp"
         android:text="Vigilate"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="40sp"
+        android:textSize="60sp"
         android:typeface="sans"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

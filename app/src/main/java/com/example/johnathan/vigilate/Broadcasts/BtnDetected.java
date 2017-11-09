@@ -44,6 +44,7 @@ public class BtnDetected extends BroadcastReceiver {
             editorSettings.putBoolean(ReferencesSettings.BTN_STOPSERVICE_ACTIVED,true);
             //activo la actualización de la ubicación exacta de quien manda la alarma
             editorSettings.putBoolean(ReferencesSettings.UPDATE_LOCATION_ACTIVED,true);
+            editorSettings.putBoolean(ReferencesSettings.ALERT_SENT, true);
             editorSettings.commit();
             //falta lógica para secuencia de botones
             Intent serviceSendLocation = new Intent(context, ServiceLocationGPS.class);
